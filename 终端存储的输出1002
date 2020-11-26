@@ -1,0 +1,99 @@
+Last login: Wed Oct  2 20:53:11 on ttys001
+pp:~ mac$ cd /Users/mac/Desktop/NetDemo 
+pp:NetDemo mac$ pod install --verbose --no-repo-update
+  Preparing
+
+Analyzing dependencies
+
+Inspecting targets to integrate
+  Using `ARCHS` setting to build architectures of target `Pods-NetDemo`: (``)
+
+Finding Podfile changes
+  A NetHelper
+  - MJExtension
+
+Fetching external sources
+-> Fetching podspec for `NetHelper` from `./Module/NetHelper`
+[!] The `NetHelper` pod failed to validate due to 1 error:
+    - ERROR | source: The Git source still contains the example URL.
+    - WARN  | description: The description is equal to the summary.
+
+
+
+pp:NetDemo mac$ pod install --verbose --no-repo-update
+  Preparing
+
+Analyzing dependencies
+
+Inspecting targets to integrate
+  Using `ARCHS` setting to build architectures of target `Pods-NetDemo`: (``)
+
+Finding Podfile changes
+  A NetHelper
+  - MJExtension
+
+Fetching external sources
+-> Fetching podspec for `NetHelper` from `Module/NetHelper`
+
+Resolving dependencies of `Podfile`
+  CDN: trunk Relative path: CocoaPods-version.yml exists! Returning local
+  because checking is only perfomed in repo update
+  CDN: trunk Relative path: all_pods_versions_8_a_b.txt exists! Returning local
+  because checking is only perfomed in repo update
+  CDN: trunk Relative path:
+  Specs/8/a/b/MJExtension/3.2.0/MJExtension.podspec.json exists! Returning local
+  because checking is only perfomed in repo update
+  CDN: trunk Relative path:
+  Specs/8/a/b/MJExtension/3.2.0/MJExtension.podspec.json exists! Returning local
+  because checking is only perfomed in repo update
+
+Comparing resolved specification to the sandbox manifest
+  A NetHelper
+  - MJExtension
+
+Downloading dependencies
+
+-> Using MJExtension (3.2.0)
+
+-> Installing NetHelper (0.0.1)
+  - Running pre install hooks
+
+Generating Pods project
+  - Creating Pods project
+  - Installing files into Pods project
+    - Adding source files
+    - Adding frameworks
+    - Adding libraries
+    - Adding resources
+    - Adding development pod helper files
+    - Linking headers
+  - Installing Pod Targets
+    - Installing target `MJExtension` iOS 8.0
+      - Generating dummy source at `Pods/Target Support
+      Files/MJExtension/MJExtension-dummy.m`
+    - Installing target `NetHelper` iOS 4.3
+      - Generating dummy source at `Pods/Target Support
+      Files/NetHelper/NetHelper-dummy.m`
+  - Installing Aggregate Targets
+    - Installing target `Pods-NetDemo` iOS 8.0
+      - Generating dummy source at `Pods/Target Support
+      Files/Pods-NetDemo/Pods-NetDemo-dummy.m`
+  - Generating deterministic UUIDs
+  - Stabilizing target UUIDs
+  - Running post install hooks
+  - Writing Xcode project file to `Pods/Pods.xcodeproj`
+  Cleaning up sandbox directory
+  - Writing Lockfile in `Podfile.lock`
+  - Writing Manifest in `Pods/Manifest.lock`
+
+Integrating client project
+
+Integrating target `Pods-NetDemo` (`NetDemo.xcodeproj` project)
+  - Running post install hooks
+    - cocoapods-stats from
+    `/Library/Ruby/Gems/2.3.0/gems/cocoapods-stats-1.1.0/lib/cocoapods_plugin.rb`
+      CDN: trunk Relative path: CocoaPods-version.yml exists! Returning local
+      because checking is only perfomed in repo update
+
+-> Pod installation complete! There are 2 dependencies from the Podfile and 2 total pods installed.
+pp:NetDemo mac$ 
