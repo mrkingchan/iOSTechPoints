@@ -1,0 +1,125 @@
+
+
+#######################本地库文件制作流程
+https://juejin.im/post/5cd64b816fb9a0325031cf43
+
+
+https://t.me/jianhuang66
+
+//
+//  BaseModle.swift
+//  NetworkHandler
+//
+//  Created by mac on 2019/10/4.
+//  Copyright © 2019 mac. All rights reserved.
+//
+
+import UIKit
+import HandyJSON
+public class BaseModle: NSObject,HandyJSON {
+    public required override init() {}
+    
+    var paramters:[String:Any] = [:]{
+        didSet {
+            
+        }
+    }
+    
+    func requesParamters(_ paramters:[String:Any])->BaseModle {
+        self.paramters = paramters
+        return self
+    }
+    
+    var requestType:HTTPMethod = .post{
+        didSet {
+            
+        }
+    }
+    
+    var requestUrl:String = "" {
+        didSet {
+            
+        }
+    }
+    
+    func requestType(_ type:HTTPMethod)->BaseModle {
+        self.requestType = type
+        return self
+    }
+    
+    func requestURL(_ url:String)->BaseModle {
+        self.requestUrl = url
+        return self
+    }
+    
+    ///
+    ///
+    /// - Parameters:
+    ///   - url: 请求路径
+    ///   - method: 请求方法
+    ///   - modelType: modelType
+    public func request(_with modelType:HandyJSON.Type,closure:@escaping (_ resultCode: ResultCode, _ message: ResultMessage, _ responseData:Any?) -> ()) {
+        Session.request(withAction: self.requestUrl, withMethod: self.requestType, withParams: self.paramters) { (code, message, data) in
+            guard code == .success, data != nil else{
+                closure(code,message,nil)
+                return
+            }
+            if data is Array<Any> {
+                let list = data as? [[String:Any]]
+                var models = [Any]()
+                list?.forEach({ (item) in
+                    let model = modelType.self.deserialize(from: item)
+                    models.append(model)
+                })
+                closure(code,message,models)
+            } else if data is [String:Any] {
+                let itemData = data as? [String:Any]
+                let model = modelType.self.deserialize(from: itemData)
+                guard let result = model else{ closure(code,message,itemData); return }
+                closure(code,message,model)
+            }
+        }
+    }
+}
+
+
+
+static NSString const *privateKey = @"2019ysapp7527";
+
+// 加密
+- (NSData *)xor_encrypt {
+    NSInteger length = 100;
+    const char *keys = [privateKey cStringUsingEncoding:NSASCIIStringEncoding];
+    NSMutableData *encryptData = [NSMutableData dataWithData:self];
+    // 获取字节指针
+    const Byte *point = encryptData.bytes;
+    for (int i = 0; i < length; i++) {
+        int l = i % privateKey.length;
+        char c = keys[l];
+        Byte b = (Byte) ((point[i]) ^ c);
+        [encryptData replaceBytesInRange:NSMakeRange(i, 1) withBytes:&b];
+    }
+    return encryptData;
+}
+
+
+
+// MARK: -################################## 解密data
+extension Kingfisher where Base:Image {
+    public class func xor_encrypt(sourceData:Data) -> Data? {
+        let privateKey = "2019ysapp7527"
+        let privateData = privateKey.data(using: .utf8)!
+        var keyData = [UInt8](privateData)
+        let encryptData = NSMutableData(data: sourceData)
+        // 获取字节指针
+        var resultData = [UInt8](sourceData)
+        //获取一个data的bytes
+        for i in 0..<100 {
+            let l = i % privateKey.count
+            let c = keyData[l]
+            var b = ((resultData[i]) ^ c)// 异或运算
+            encryptData.replaceBytes(in: NSRange(location: i, length: 1), withBytes: &b) // 追加字节
+        }
+        return encryptData as? Data
+    }
+}

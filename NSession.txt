@@ -1,0 +1,238 @@
+//
+//  NSession.swift
+//  NetworkHandler
+//
+//  Created by mac on 2019/9/11.
+//  Copyright © 2019 mac. All rights reserved.
+//
+
+import Foundation
+
+extension NSNotification.Name {
+    static public let NeedLogin = Notification.Name("needLogin")
+}
+
+public enum HTTPMethod: String {
+    case options = "OPTIONS"
+    case get     = "GET"
+    case head    = "HEAD"
+    case post    = "POST"
+    case put     = "PUT"
+    case patch   = "PATCH"
+    case delete  = "DELETE"
+    case trace   = "TRACE"
+    case connect = "CONNECT"
+}
+
+public typealias Parameters = [String: Any]
+
+///地址
+var MAIN_HOST:String {
+    get {
+        //发布地址
+//        let RELEASE_HOST = "http://192.168.1.249:8088"
+        /** 测试地址
+         *  陈斌 http://192.168.1.2:8088
+         */
+        let DEBUG_HOST = "http://192.168.1.2:8088/api"  //统一测试地址
+//          let DEBUG_HOST = "http://192.168.1.132:8088/api"  //云木测试地址
+        return DEBUG_HOST
+    }
+}
+
+
+///文件存储空间
+let BUCKET_NAME = "bucket_001"
+
+///文件存储IP
+let FILE_HOST = "http://192.168.1.249:8080"
+
+//MARK:-网络封装
+public class Session {
+
+    /// convert url转换
+    /// - Parameter url: url
+    static func __convertUrl(url:String)->String {
+        var host:String = ""
+        if url.contains("/ad/") || url.contains("/userVideo/") || (url.contains("/video") && url.contains("Record")) || (url.contains("/video") && url.contains("Tag")) || url.contains("Actors") || (url.contains("/video") && url.contains("Topic"))  {
+            host = "http://192.168.1.132:8088/api" + url
+        } else {
+            host = MAIN_HOST + url
+        }
+        return host
+    }
+    
+    class func request(withAction action: Actions, withMethod method: HTTPMethod, withParams params: Parameters, closure: @escaping Closure) {
+        assert(action.count>0)
+        let host = __convertUrl(url: action)
+        
+//        var headers = [String:String]()
+//        if let token = localToken, action != Actions.login {
+//            headers = ["Authorization": token, "Content-Type":"application/json;charset=utf-8"]
+//        }
+        guard let requestURL = URL(string: host) else { return }
+    
+        var methodStr = ""
+        switch method {
+        case .post:
+            methodStr = "POST"
+            break
+        case .get:
+            methodStr = "GET"
+            break
+        case .delete :
+            methodStr = "DELETE"
+            break
+        default:
+            methodStr = "POST"
+        }
+        var urlRequest = URLRequest(url: requestURL)
+        urlRequest.httpMethod = methodStr
+        if params.keys.count>=1 {
+            urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+        }
+        urlRequest.setValue(localToken, forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("application/json;charset=utf-8", forHTTPHeaderField: "Content-Type")
+        print("requestParamter = %@",params)
+        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: OperationQueue.main)
+      let dataTask = session.dataTask(with: urlRequest) { (data, repsonse, error) in
+            if error == nil {
+                guard repsonse is HTTPURLResponse else {
+                    closure(.failure,"非http请求",nil)
+                    return
+                }
+                let httpResponse = repsonse as? HTTPURLResponse
+                //分析code
+                if httpResponse?.statusCode == 301 {
+                    closure(.success,"重新登录",nil)
+                    NotificationCenter.default.post(name: .NeedLogin, object: nil)
+                } else {
+                    if data != nil {
+                        let json = try? JSONSerialization.jsonObject(with: data!, options: [])
+                        print("url = %@---response = %@",action,json ?? "")
+                        closure(.success,"请求成功",json)
+                    }else {
+                        closure(.success,"数据为空",nil)
+                    }
+                }
+            } else {
+                closure(.failure,String(describing: error),nil)
+            }
+        }
+        dataTask.resume()
+    }
+    
+    //MARK:-上传图片
+    class func upload(_ image: UIImage, withAction action: Actions, withParams param: Parameters, closure: @escaping (_ resultCode: ResultCode, _ message:String, _ data: Any?) -> ()){
+        assert(action.count>0)
+        let host = __convertUrl(url: action)
+        guard let requestURL = URL(string: host) else { return }
+        var urlRequest = URLRequest(url: requestURL)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue(localToken, forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("multipart/form-data; charset=utf-8; boundary=xxxxxx123456", forHTTPHeaderField: "Content-Type")
+        
+        let mutableData = NSMutableData()
+        
+        let mutableStr = NSMutableString()
+        mutableStr.appendFormat("\r\n--%@\r\n", "xxxxxx123456")
+        mutableStr.appendFormat("Content-Disposition: form-data; name=\"file\"; filename=\"%@\"\r\n", "avatar")
+        mutableStr.append("Content-Type: image/png\r\n\r\n")
+        mutableData.append(mutableStr.data(using: String.Encoding.utf8.rawValue) ?? Data())
+        guard let imageData = image.pngData() else {
+            return
+        }
+        mutableData.append(imageData)
+        guard let endData = String.init(format: "\r\n--%@--\r\n", "xxxxxx123456").data(using: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) else { return }
+        mutableData.append(endData)
+        urlRequest.httpBody = mutableData as Data
+        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: OperationQueue.main)
+        let dataTask = session.dataTask(with: urlRequest) { (data, response, error) in
+            let httprepsonse = response as? HTTPURLResponse
+            if error == nil && httprepsonse?.statusCode == 200 {
+                closure(.success,"上传成功!",nil)
+            }else {
+                closure(.failure,String(describing: error),nil)
+            }
+        }
+        dataTask.resume()
+    }
+    
+    //MARK:-上传视频
+    class func upload(_ videoURL: URL, withAction action: Actions, closure: @escaping (_ resultCode: ResultCode?, _ message:String, _ progress: Double?) -> ()){
+        let host = MAIN_HOST + action
+    }
+}
+
+
+
+
+// MARK: -设置
+    func setupMainController(){
+        let classNames = ["HomeVC","VideoVC","TopicVC","CircleVC","MineVC"]
+        let titles = ["首页","视频","主题","圈子","我的"]
+        var naviControllers = [UINavigationController]()
+        for (index,classItem) in classNames.enumerated() {
+            guard let  moduleName = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String else {
+                print("获取工程名字失败！")
+                return
+            }
+            let name = moduleName + "." + classItem
+            let viewController = kbuildControllerWithConfiguration(name, title: titles[index], normalImage: UIImage.init(named: String.init(format: "tabbar_%i_n", index + 1)) ?? UIImage(), selectedImage: UIImage.init(named: String.init(format: "tabbar_%i_s", index + 1)) ?? UIImage())
+            let naviController = UINavigationController(rootViewController: viewController)
+            naviController.navigationItem.title = titles[index]
+            naviControllers.append(naviController)
+        }
+        let tabbarController = UITabBarController()
+        tabbarController.viewControllers = naviControllers
+        window?.rootViewController = tabbarController
+    }
+    
+    
+    /// 构建viewControllerWithConfigiuration
+    ///
+    /// - Parameters:
+    ///   - className: <#className description#>
+    ///   - title: <#title description#>
+    ///   - normalImage: <#normalImage description#>
+    ///   - selectedImage: <#selectedImage description#>
+    /// - Returns: <#return value description#>
+    func kbuildControllerWithConfiguration(_ className:String,title:String,normalImage:UIImage,selectedImage:UIImage)->UIViewController {
+        let className = NSClassFromString(className) as! UIViewController.Type
+        let viewController = className.init()
+        let tabbarItem = UITabBarItem(title: title, image: normalImage.withRenderingMode(UIImage.RenderingMode.alwaysOriginal), selectedImage: selectedImage.withRenderingMode(UIImage.RenderingMode.alwaysOriginal))
+        tabbarItem.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : UIColor.gray], for: UIControl.State.normal)
+        tabbarItem.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : UIColor.black], for: UIControl.State.selected)
+        viewController.tabBarItem = tabbarItem
+        return viewController
+    }
+
+Note：在纯swift项目中引用oc的类的方法，首先建立一个headerfile:Bridge-Swift.h然后在build setting里（$SRCROOT）/SWiftpProjectName/Bridge-Swift.h
+
+组件化切割
+https://juejin.im/post/5cd64b816fb9a0325031cf43
+
+
+ /// utc时间转换
+    ///
+    /// - Parameter utcDate: utc时间字符串
+    public func __convertUtcStrToLocal(utcDate:String)->Date?{
+        let format1 = DateFormatter()
+        format1.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        guard let date = format1.date(from: utcDate) else { return nil }
+        format1.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let dateStr = format1.string(from: date)
+        print("date = " + dateStr)
+        return format1.date(from: dateStr)
+    }
+    
+    
+    /// 时间转换字符串
+    ///
+    /// - Parameter minutes: 分钟数
+     public  func __convertPlayTime(minutes:Int)->String {
+        let m = minutes % 60;
+        let h = minutes / 60;
+        return String.init(format: "%02d:%02d:00", h,m)
+    }
+

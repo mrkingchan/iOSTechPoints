@@ -1,0 +1,176 @@
+{\rtf1\ansi\ansicpg936\cocoartf2512
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;\f2\fnil\fcharset134 PingFangSC-Regular;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red0\green0\blue0;
+\red251\green0\blue7;\red255\green255\blue10;\red33\green255\blue6;\red0\green0\blue0;\red0\green0\blue255;
+\red155\green35\blue147;\red92\green38\blue153;\red50\green109\blue116;\red57\green0\blue160;\red196\green26\blue22;
+\red28\green0\blue207;\red36\green82\blue86;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c0\c0;\csgenericrgb\c100000\c100000\c100000;\cssrgb\c0\c0\c0;
+\cssrgb\c100000\c12195\c0;\cssrgb\c99942\c98555\c0;\cssrgb\c0\c97680\c0;\csgray\c0\c0;\csgenericrgb\c11\c176\c99822;
+\csgenericrgb\c60759\c13753\c57628;\csgenericrgb\c35922\c14825\c60191;\csgenericrgb\c19418\c42935\c45455;\csgenericrgb\c22454\c0\c62803;\csgenericrgb\c77000\c10200\c8600;
+\csgenericrgb\c11000\c0\c81000;\csgenericrgb\c13924\c32052\c33684;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww12860\viewh12760\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Note :
+\f1\fs26 \cf2 \cb3 \
+\pard\tx642\pardeftab642\pardirnatural\partightenfactor0
+\cf2 Git
+\f2 \'b5\'c4\'cf\'ea\'cf\'b8\'ca\'b9\'d3\'c3\
+\
+\cf4 \cb5 https://github.com/westfourth\cf2 \cb3 \
+\
+
+\f1 \
+\pard\tx642\pardeftab642\pardirnatural\partightenfactor0
+\cf2 \cb6 https://www.liaoxuefeng.com/wiki/896043488029600/900003767775424\
+\
+\cb7 https://xclient.info/s/c/dev/2/\cb8 \
+\
+
+\f2 \'d3\'c5\'d0\'e3\'b5\'c4\'c8\'fd\'b7\'bd\'bf\'e2\'a3\'ba\
+Bond\
+
+\f1 \
+\pard\tx642\pardeftab642\pardirnatural\partightenfactor0
+\cf9 \cb3 /// add by jianghe\cf2 \
+\pard\tx642\pardeftab642\pardirnatural\partightenfactor0
+\cf10 class\cf2  AlertView: \cf11 UIView\cf2  \{\
+    \
+    \cf10 var\cf2  complete:(()->())?\
+    \cf10 class\cf2  \cf10 func\cf2  alertView(\cf10 _\cf2  closure:\cf10 @escaping\cf2  ()->())->\cf12 AlertView\cf2  \{\
+        \cf10 return\cf2  \cf12 AlertView\cf2 (closure)\
+    \}\
+   \
+    \cf10 required\cf2  \cf10 init\cf2 ?(coder aDecoder: \cf11 NSCoder\cf2 ) \{\
+        \cf13 fatalError\cf2 (\cf14 "init(coder:) has not been implemented"\cf2 )\
+    \}\
+    \
+    \cf9 // MARK: -init Method\cf2 \
+    \cf10 init\cf2 (\cf10 _\cf2  closure:\cf10 @escaping\cf2  ()->())\{\
+        \cf10 super\cf2 .\cf11 init\cf2 (frame: \cf11 UIScreen\cf2 .\cf11 main\cf2 .\cf11 bounds\cf2 )\
+        \cf12 complete\cf2  = closure\
+        \cf11 UIApplication\cf2 .\cf11 shared\cf2 .\cf11 keyWindow\cf2 ?.\cf13 addSubview\cf2 (\cf10 self\cf2 )\
+        \cf10 self\cf2 .\cf11 backgroundColor\cf2  = \cf11 UIColor\cf2 .\cf11 black\cf2 .\cf13 withAlphaComponent\cf2 (\cf15 0.4\cf2 )\
+        \cf16 setUI\cf2 ()\
+    \}\
+    \
+    \cf10 func\cf2  setUI() \{\
+        \cf10 let\cf2  panelView = \cf11 UIView\cf2 ()\
+        panelView.\cf11 backgroundColor\cf2  = \cf11 UIColor\cf2 .\cf11 white\cf2 \
+        panelView.\cf11 isUserInteractionEnabled\cf2  = \cf10 true\cf2 \
+        \cf10 self\cf2 .\cf13 addSubview\cf2 (panelView)\
+        panelView.\cf12 snp\cf2 .\cf16 makeConstraints\cf2  \{ (make) \cf10 in\cf2 \
+            make.\cf12 size\cf2 .\cf16 equalTo\cf2 (\cf11 CGSize\cf2 (width: \cf15 270\cf2 , height: \cf15 140\cf2 ))\
+            make.\cf12 center\cf2 .\cf16 equalToSuperview\cf2 ()\
+        \}\
+        panelView.\cf11 clipsToBounds\cf2  = \cf10 true\cf2 \
+        panelView.\cf11 layer\cf2 .\cf11 cornerRadius\cf2  = \cf15 15.0\cf2 \
+        \
+        \
+        panelView.\cf13 addSubview\cf2 (\cf12 close\cf2 )\
+        \cf12 close\cf2 .\cf12 snp\cf2 .\cf16 makeConstraints\cf2  \{ (make) \cf10 in\cf2 \
+            make.\cf12 top\cf2 .\cf12 right\cf2 .\cf16 equalToSuperview\cf2 ().\cf16 inset\cf2 (\cf15 10\cf2 )\
+            make.\cf12 size\cf2 .\cf16 equalTo\cf2 (\cf15 16\cf2 )\
+        \}\
+        \
+        panelView.\cf13 addSubview\cf2 (\cf12 title\cf2 )\
+        \cf12 title\cf2 .\cf12 snp\cf2 .\cf16 makeConstraints\cf2  \{ (make) \cf10 in\cf2 \
+            make.\cf12 left\cf2 .\cf16 equalTo\cf2 (\cf15 16\cf2 )\
+            make.\cf12 right\cf2 .\cf16 equalTo\cf2 (\cf15 -16\cf2 )\
+            make.\cf12 top\cf2 .\cf16 equalTo\cf2 (\cf15 17\cf2 )\
+        \}\
+        \
+        panelView.\cf13 addSubview\cf2 (\cf12 des\cf2 )\
+        \cf12 des\cf2 .\cf12 snp\cf2 .\cf16 makeConstraints\cf2  \{ (make) \cf10 in\cf2 \
+            make.\cf12 left\cf2 .\cf16 equalTo\cf2 (\cf15 16\cf2 )\
+            make.\cf12 right\cf2 .\cf16 equalTo\cf2 (\cf15 -16\cf2 )\
+            make.\cf12 top\cf2 .\cf16 equalTo\cf2 (\cf15 50\cf2 )\
+        \}\
+        \
+        panelView.\cf13 addSubview\cf2 (\cf12 line\cf2 )\
+        \cf12 line\cf2 .\cf12 snp\cf2 .\cf16 makeConstraints\cf2  \{ (make) \cf10 in\cf2 \
+            make.\cf12 left\cf2 .\cf12 right\cf2 .\cf16 equalToSuperview\cf2 ()\
+            make.\cf12 height\cf2 .\cf16 equalTo\cf2 (\cf15 0.2\cf2 )\
+            make.\cf12 bottom\cf2 .\cf16 equalTo\cf2 (\cf15 -44.5\cf2 )\
+        \}\
+        \
+        panelView.\cf13 addSubview\cf2 (\cf10 self\cf2 .\cf12 spread\cf2 )\
+        \cf12 spread\cf2 .\cf12 snp\cf2 .\cf16 makeConstraints\cf2  \{ (make) \cf10 in\cf2 \
+            make.\cf12 left\cf2 .\cf12 right\cf2 .\cf12 bottom\cf2 .\cf16 equalToSuperview\cf2 ()\
+            make.\cf12 height\cf2 .\cf16 equalTo\cf2 (\cf15 44\cf2 )\
+        \}\
+        \
+        \
+        \cf13 addSubview\cf2 (\cf12 imageView\cf2 )\
+        \cf12 imageView\cf2 .\cf12 snp\cf2 .\cf16 makeConstraints\cf2  \{ (make) \cf10 in\cf2 \
+            make.\cf12 left\cf2 .\cf16 equalTo\cf2 (panelView).\cf16 inset\cf2 (\cf15 -10\cf2 )\
+            make.\cf12 top\cf2 .\cf16 equalTo\cf2 (panelView).\cf16 offset\cf2 (\cf15 -90\cf2 )\
+        \}\
+    \}\
+    \cf9 // MARK: -__________________________________________lazy Load\cf2 \
+    \cf10 lazy\cf2  \cf10 var\cf2  imageView:\cf11 UIImageView\cf2  =  \{\
+        \cf10 return\cf2  \cf11 UIImageView\cf2 (image: \cf11 UIImage\cf2 (named: \cf14 "watch_time_over_tip"\cf2 ))\
+    \}()\
+    \
+    \
+    \cf10 lazy\cf2  \cf10 var\cf2  close:\cf11 UIButton\cf2  = \{\
+        \cf10 let\cf2  closeIcon = \cf11 UIButton\cf2 ()\
+        closeIcon.\cf13 setBackgroundImage\cf2 (\cf11 UIImage\cf2 (named: \cf14 "close_icon"\cf2 ), for: .\cf11 normal\cf2 )\
+        closeIcon.\cf13 addTarget\cf2 (\cf10 self\cf2 , action: \cf10 #selector\cf2 (\cf16 hide\cf2 ), for: .\cf11 touchUpInside\cf2 )\
+        \cf10 return\cf2  closeIcon\
+    \}()\
+    \
+    \cf10 lazy\cf2  \cf10 var\cf2  spread:\cf11 UILabel\cf2  = \{\
+        \cf10 let\cf2  label = \cf11 UILabel\cf2 ()\
+        label.\cf11 text\cf2  = \cf14 "
+\f2 \'c8\'a5\'cd\'c6\'b9\'e3
+\f1 "\cf2 \
+        \cf10 let\cf2  tap = \cf11 UITapGestureRecognizer\cf2 (target: \cf10 self\cf2 , action: \cf10 #selector\cf2 (\cf10 self\cf2 .\cf16 spreadAction\cf2 ))\
+        label.\cf13 addGestureRecognizer\cf2 (tap)\
+        label.\cf11 font\cf2  = \cf16 FONT\cf2 (\cf15 15\cf2 )\
+        label.\cf11 textAlignment\cf2  = .\cf13 center\cf2 \
+        \cf10 return\cf2  label\
+    \}()\
+    \
+    \cf10 lazy\cf2  \cf10 var\cf2  line:\cf11 UIView\cf2  = \{\
+       \cf10 let\cf2  view = \cf11 UIView\cf2 ()\
+        view.\cf11 backgroundColor\cf2  = \cf11 UIColor\cf2 .\cf11 gray\cf2 \
+        \cf10 return\cf2  view\
+    \}()\
+    \
+    \cf10 lazy\cf2  \cf10 var\cf2  des:\cf11 UILabel\cf2  = \{\
+        \cf10 let\cf2  label = \cf11 UILabel\cf2 ()\
+        label.\cf11 text\cf2  = \cf14 "
+\f2 \'c4\'fa\'b5\'c4\'bd\'f1\'c8\'d5\'b9\'db\'d3\'b0\'b4\'ce\'ca\'fd\'d2\'d1\'d3\'c3\'cd\'ea\'a3\'ac\'d1\'fb\'c7\'eb\'ba\'c3\'d3\'d1\'bf\'c9\'bb\'f1\'ce\'de\'cf\'de\'b9\'db\'bf\'b4
+\f1 "\cf2 \
+        label.\cf11 font\cf2  = \cf16 FONT\cf2 (\cf15 12\cf2 )\
+        label.\cf11 numberOfLines\cf2  = \cf15 2\cf2 \
+        label.\cf11 textAlignment\cf2  = .\cf13 center\cf2 \
+        \cf10 return\cf2  label\
+    \}()\
+    \
+    \
+    \cf10 lazy\cf2  \cf10 var\cf2  title:\cf11 UILabel\cf2  = \{\
+        \cf10 let\cf2  label = \cf11 UILabel\cf2 ()\
+        label.\cf11 text\cf2  = \cf14 "
+\f2 \'b4\'ce\'ca\'fd\'d3\'c3\'cd\'ea\'c1\'cb\'a1\'ab
+\f1 "\cf2 \
+        label.\cf11 font\cf2  = \cf16 BFONT\cf2 (\cf15 16\cf2 )\
+        label.\cf11 textAlignment\cf2  = .\cf13 center\cf2 \
+        \cf10 return\cf2  label\
+    \}()\
+\
+    \
+    \cf9 // MARK: -________________________________private method\cf2 \
+    \cf10 @objc\cf2  \cf10 func\cf2  spreadAction() \{\
+        \cf10 if\cf2  \cf10 self\cf2 .\cf12 complete\cf2  != \cf10 nil\cf2  \{\
+            \cf10 self\cf2 .\cf12 complete\cf2 ?()\
+        \}\
+        \cf16 hide\cf2 ()\
+    \}\
+    \
+    \cf10 @objc\cf2  \cf10 func\cf2  hide() \{\
+        \cf10 self\cf2 .\cf13 removeFromSuperview\cf2 ()\
+    \}\
+\}}
